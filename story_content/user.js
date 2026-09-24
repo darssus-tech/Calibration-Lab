@@ -16,199 +16,45 @@ var slideHeight = player.slideHeight;
 var getKeyDown = player.getKeyDown;
 var keydown = player.keydown;
 var keyup = player.keyup;
-window.Script1 = function()
-{
-  try {
-  var player = GetPlayer();
-  var currentIndex = player.GetVar("scenariosPlayed") || 0;
-
-  // 1. Initialize deck ONCE on game start
-  if (typeof window.gameDeck === "undefined" || !window.gameDeck || window.gameDeck.length === 0) {
-    
-    player.SetVar("moraleScore", 50);
-    player.SetVar("productivityScore", 50);
-    player.SetVar("MentorPassCount", 1);
-
-    window.gameDeck = [
-      // CONTROL SCENARIOS
-      {
-        text: 'I made a few minor edits to your slide deck before sending it to the VP just to ensure it hits executive tone. Take a look when you can.',
-        category: 'Control',
-        headerCorrect: 'Spot on.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'You correctly identified over-controlling behavior. Disguised as helping, silent rewrites strip ownership and erode confidence.',
-        rationaleIncorrect: 'This statement represents Control. Silently fixing work instead of coaching creates dependency.'
-      },
-      {
-        text: 'Please send me a bulleted outline of your daily schedule every morning by 8:30 AM so I can make sure your tasks are prioritized correctly.',
-        category: 'Control',
-        headerCorrect: 'Correct.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'Right call. Requiring micro-updates on routine daily schedules is over-control and signals a lack of trust.',
-        rationaleIncorrect: 'Miscalibrated! Tracking hourly tasks and daily schedules is operational micromanagement, reflecting over-control.'
-      },
-      {
-        text: 'I drafted the email response to the client for you. Just copy and paste it from your inbox and send it out under your name.',
-        category: 'Control',
-        headerCorrect: 'Right call.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'Spot on! Ghostwriting routine communications is over-control. It offers zero learning value or autonomy.',
-        rationaleIncorrect: 'This statement represents Control. It removes problem-solving from the employee.'
-      },
-      {
-        text: 'Whenever you join vendor calls, keep your mic on mute and let me field all questions so we stay on message.',
-        category: 'Control',
-        headerCorrect: 'Exactly.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'Correct! Benchwarmer mandates are over-control, preventing team members from building authority.',
-        rationaleIncorrect: 'This statement represents Control. Muting team members signals distrust.'
-      },
-      {
-        text: 'I set up a shared tracker where you need to log the exact start and end times for each project sub-task throughout the day.',
-        category: 'Control',
-        headerCorrect: 'Spot on.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'You caught it. High-frequency task logging is over-control that creates administrative overhead.',
-        rationaleIncorrect: 'This statement represents Control. Granular task logging degrades trust.'
-      },
-
-      // COACH SCENARIOS
-      {
-        text: 'I noticed project milestones slipped twice this month. Let me know what bottlenecks you are running into so we can adjust.',
-        category: 'Coach',
-        headerCorrect: 'Nice call.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'Spot on. This is Coaching. It focuses neutrally on systemic roadblocks rather than placing personal blame.',
-        rationaleIncorrect: 'Miscalibrated! This is Coaching, not Control or Direct. Asking open questions about bottlenecks builds problem-solving capability.'
-      },
-      {
-        text: 'Walk me through how you arrived at this forecast model. I want to understand your assumptions before we sign off.',
-        category: 'Coach',
-        headerCorrect: 'Correct.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'Right call. This is Coaching. It encourages critical reflection without taking over the deliverable.',
-        rationaleIncorrect: 'This statement represents Coaching. Prompting critical reasoning builds capability.'
-      },
-      {
-        text: 'What support or resources do you need from me to feel confident presenting this strategy to the leadership team next week?',
-        category: 'Coach',
-        headerCorrect: 'Spot on.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'Exactly. Empowering the individual to define their own support needs is active Coaching.',
-        rationaleIncorrect: 'This statement represents Coaching. Offering targeted support builds confidence.'
-      },
-      {
-        text: 'Your recent client presentation had great energy. How do you feel about the Q&A segment, and where could we refine it?',
-        category: 'Coach',
-        headerCorrect: 'Right call.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'Correct! Promoting self-assessment first rather than imposing top-down feedback is core Coaching.',
-        rationaleIncorrect: 'This statement represents Coaching. Guided self-reflection is key to performance growth.'
-      },
-      {
-        text: 'Since you managed the pilot phase, what adjustments would you recommend before we scale this process nationwide?',
-        category: 'Coach',
-        headerCorrect: 'Exactly.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'Spot on! Validating subject-matter expertise and seeking input is empowering Coaching behavior.',
-        rationaleIncorrect: 'This statement represents Coaching. Seeking operational input fosters ownership.'
-      },
-
-      // DIRECT SCENARIOS
-      {
-        text: 'Your presentation was clear. Next time, include raw data points on Slide 4 to back up your ROI claims.',
-        category: 'Direct',
-        headerCorrect: 'Correct.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'Right call. Giving clear, specific adjustments sets objective expectations without policing style.',
-        rationaleIncorrect: 'This statement represents Direct leadership. It provides clear, actionable parameters.'
-      },
-      {
-        text: 'To hit our Q3 SLA target, all tier-1 escalation tickets must receive an initial response within 2 hours of arrival.',
-        category: 'Direct',
-        headerCorrect: 'Spot on.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'Exactly. Setting explicit, quantitative metrics for execution is Direct leadership.',
-        rationaleIncorrect: 'This statement represents Direct leadership. It sets clear operational performance standards.'
-      },
-      {
-        text: 'Please format all client-facing financial summaries using the standard Q3 template located on the share drive.',
-        category: 'Direct',
-        headerCorrect: 'Right call.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'Correct! Enforcing standard templates is Direct leadership that ensures quality governance.',
-        rationaleIncorrect: 'This statement represents Direct leadership. Standardizing process output is essential governance.'
-      },
-      {
-        text: 'In future weekly status updates, open with key risks first before detailing project progress highlights.',
-        category: 'Direct',
-        headerCorrect: 'Exactly.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'Spot on. Establishing communication protocols for decision-making is clear Direct leadership.',
-        rationaleIncorrect: 'This statement represents Direct leadership. Restructuring reporting formats increases clarity.'
-      },
-      {
-        text: 'Ensure all budget variance notes include a brief risk analysis prior to end-of-month submission.',
-        category: 'Direct',
-        headerCorrect: 'Spot on.',
-        headerIncorrect: 'Miscalibration.',
-        rationaleCorrect: 'Right call! Defining procedural compliance steps removes ambiguity and is Direct leadership.',
-        rationaleIncorrect: 'This statement represents Direct leadership. Explicit procedural guidelines prevent rework.'
-      }
-    ];
-
-    // Fisher-Yates shuffle
-    for (var i = window.gameDeck.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var temp = window.gameDeck[i];
-      window.gameDeck[i] = window.gameDeck[j];
-      window.gameDeck[j] = temp;
-    }
-  }
-
-  // 2. Select card using current index
-  var safeIndex = currentIndex % window.gameDeck.length;
-  var currentCard = window.gameDeck[safeIndex];
-
-  window.activeCard = currentCard;
-
-  // 3. Force Storyline Variable Update
-  player.SetVar("currentScenarioText", ""); // Clear temporarily to force Storyline DOM change listener
-  setTimeout(function() {
-    player.SetVar("currentScenarioText", currentCard.text);
-  }, 10);
-
-} catch (err) {
-  console.log("Timeline Start Error: " + err);
-}
-}
-
 window.Script2 = function()
 {
   try {
   var player = GetPlayer();
-  var currentIndex = player.GetVar("scenariosPlayed") || 0;
 
+  // Safely get scenariosPlayed index (forces 0 on start)
+  var rawIdx = player.GetVar("scenariosPlayed");
+  var currentIndex = parseInt(rawIdx, 10);
+  if (isNaN(currentIndex) || currentIndex < 0) {
+    currentIndex = 0;
+    player.SetVar("scenariosPlayed", 0);
+  }
+
+  // Initialize deck if missing or unpopulated
   if (typeof window.gameDeck === "undefined" || !window.gameDeck || window.gameDeck.length === 0) {
     window.gameDeck = [
-      { text: "I made a few minor edits to your slide deck before sending it to the VP just to ensure it hits executive tone. Take a look when you can.", category: "Control", headerCorrect: "Spot on.", headerIncorrect: "Miscalibration.", rationaleCorrect: "You correctly identified over-controlling behavior. Disguised as 'helping,' silent rewrites strip ownership and erode confidence.", rationaleIncorrect: "This statement represents Control. Silently fixing work instead of coaching creates dependency." },
-      { text: "Please send me a bulleted outline of your daily schedule every morning by 8:30 AM so I can make sure your tasks are prioritized correctly.", category: "Control", headerCorrect: "Correct.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Right call. Requiring micro-updates on routine schedules is over-control and signals a lack of trust.", rationaleIncorrect: "This statement represents Control. Tracking hourly tasks is operational micromanagement." },
-      { text: "I drafted the email response to the client for you. Just copy and paste it from your inbox and send it out under your name.", category: "Control", headerCorrect: "Right call.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Spot on! Ghostwriting routine communications is over-control. It offers zero learning value or autonomy.", rationaleIncorrect: "This statement represents Control. It removes problem-solving from the employee." },
-      { text: "Whenever you join vendor calls, keep your mic on mute and let me field all questions so we stay on message.", category: "Control", headerCorrect: "Exactly.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Correct! Benchwarmer mandates are over-control, preventing team members from building authority.", rationaleIncorrect: "This statement represents Control. Muting team members signals distrust." },
-      { text: "I set up a shared tracker where you need to log the exact start and end times for each project sub-task throughout the day.", category: "Control", headerCorrect: "Spot on.", headerIncorrect: "Miscalibration.", rationaleCorrect: "You caught it. High-frequency task logging is over-control that creates administrative overhead.", rationaleIncorrect: "This statement represents Control. Granular task logging degrades trust." },
-      { text: "I noticed project milestones slipped twice this month. Let me know what bottlenecks you are running into so we can adjust.", category: "Coach", headerCorrect: "Nice call.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Spot on. This is Coaching. It focuses neutrally on systemic roadblocks rather than placing personal blame.", rationaleIncorrect: "This statement represents Coaching. It asks open questions to help the employee solve bottlenecks." },
-      { text: "Walk me through how you arrived at this forecast model. I want to understand your assumptions before we sign off.", category: "Coach", headerCorrect: "Correct.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Right call. This is Coaching. It encourages critical reflection without taking over the deliverable.", rationaleIncorrect: "This statement represents Coaching. Prompting critical reasoning builds capability." },
-      { text: "What support or resources do you need from me to feel confident presenting this strategy to the leadership team next week?", category: "Coach", headerCorrect: "Spot on.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Exactly. Empowering the individual to define their own support needs is active Coaching.", rationaleIncorrect: "This statement represents Coaching. Offering targeted support builds confidence." },
-      { text: "Your recent client presentation had great energy. How do you feel about the Q&A segment, and where could we refine it?", category: "Coach", headerCorrect: "Right call.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Correct! Promoting self-assessment first rather than imposing top-down feedback is core Coaching.", rationaleIncorrect: "This statement represents Coaching. Guided self-reflection is key to performance growth." },
-      { text: "Since you managed the pilot phase, what adjustments would you recommend before we scale this process nationwide?", category: "Coach", headerCorrect: "Exactly.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Spot on! Validating subject-matter expertise and seeking input is empowering Coaching behavior.", rationaleIncorrect: "This statement represents Coaching. Seeking operational input fosters ownership." },
-      { text: "Your presentation was clear. Next time, include raw data points on Slide 4 to back up your ROI claims.", category: "Direct", headerCorrect: "Correct.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Right call. Giving clear, specific adjustments sets objective expectations without policing style.", rationaleIncorrect: "This statement represents Direct leadership. It provides clear, actionable parameters." },
-      { text: "To hit our Q3 SLA target, all tier-1 escalation tickets must receive an initial response within 2 hours of arrival.", category: "Direct", headerCorrect: "Spot on.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Exactly. Setting explicit, quantitative metrics for execution is Direct leadership.", rationaleIncorrect: "This statement represents Direct leadership. It sets clear operational performance standards." },
-      { text: "Please format all client-facing financial summaries using the standard Q3 template located on the share drive.", category: "Direct", headerCorrect: "Right call.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Correct! Enforcing standard templates is Direct leadership that ensures quality governance.", rationaleIncorrect: "This statement represents Direct leadership. Standardizing process output is essential governance." },
-      { text: "In future weekly status updates, open with key risks first before detailing project progress highlights.", category: "Direct", headerCorrect: "Exactly.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Spot on. Establishing communication protocols for decision-making is clear Direct leadership.", rationaleIncorrect: "This statement represents Direct leadership. Restructuring reporting formats increases clarity." },
-      { text: "Ensure all budget variance notes include a brief risk analysis prior to end-of-month submission.", category: "Direct", headerCorrect: "Spot on.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Right call! Defining procedural compliance steps removes ambiguity and is Direct leadership.", rationaleIncorrect: "This statement represents Direct leadership. Explicit procedural guidelines prevent rework." }
+      // CONTROL
+      { text: "I made a few minor edits to your slide deck before sending it to the VP just to ensure it hits executive tone. Take a look when you can.", category: "Control", hint: "MENTOR HINT: Notice how ownership was quietly taken away instead of offering feedback before sending.", headerCorrect: "Spot on.", headerIncorrect: "Miscalibration.", rationaleCorrect: "You correctly identified over-controlling behavior. Disguised as 'helping,' silent rewrites strip ownership and erode confidence.", rationaleIncorrect: "This statement represents Control. Silently fixing work instead of coaching creates dependency." },
+      { text: "Please send me a bulleted outline of your daily schedule every morning by 8:30 AM so I can make sure your tasks are prioritized correctly.", category: "Control", hint: "MENTOR HINT: Look for signs of micromanaging routine communication rather than establishing boundaries.", headerCorrect: "Correct.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Right call. Requiring micro-updates on routine schedules is over-control and signals a lack of trust.", rationaleIncorrect: "This statement represents Control. Tracking hourly tasks is operational micromanagement." },
+      { text: "I drafted the email response to the client for you. Just copy and paste it from your inbox and send it out under your name.", category: "Control", hint: "MENTOR HINT: The leader steps in to perform the task themselves rather than preparing the team member.", headerCorrect: "Right call.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Spot on! Ghostwriting routine communications is over-control. It offers zero learning value or autonomy.", rationaleIncorrect: "This statement represents Control. It removes problem-solving from the employee." },
+      { text: "Whenever you join vendor calls, keep your mic on mute and let me field all questions so we stay on message.", category: "Control", hint: "MENTOR HINT: Focus on whether rigid formatting constraints are replacing personal discretion.", headerCorrect: "Exactly.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Correct! Benchwarmer mandates are over-control, preventing team members from building authority.", rationaleIncorrect: "This statement represents Control. Muting team members signals distrust." },
+      { text: "I set up a shared tracker where you need to log the exact start and end times for each project sub-task throughout the day.", category: "Control", hint: "MENTOR HINT: Notice the requirement to log output in granular time blocks.", headerCorrect: "Spot on.", headerIncorrect: "Miscalibration.", rationaleCorrect: "You caught it. High-frequency task logging is over-control that creates administrative overhead.", rationaleIncorrect: "This statement represents Control. Granular task logging degrades trust." },
+
+      // COACH
+      { text: "I noticed project milestones slipped twice this month. Let me know what bottlenecks you are running into so we can adjust.", category: "Coach", hint: "MENTOR HINT: The manager is asking an open question focused on obstacles rather than placing personal blame.", headerCorrect: "Nice call.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Spot on. This is Coaching. It focuses neutrally on systemic roadblocks rather than placing personal blame.", rationaleIncorrect: "This statement represents Coaching. It asks open questions to help the employee solve bottlenecks." },
+      { text: "Walk me through how you arrived at this forecast model. I want to understand your assumptions before we sign off.", category: "Coach", hint: "MENTOR HINT: Watch for questions designed to prompt self-reflection after an event.", headerCorrect: "Correct.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Right call. This is Coaching. It encourages critical reflection without taking over the deliverable.", rationaleIncorrect: "This statement represents Coaching. Prompting critical reasoning builds capability." },
+      { text: "What support or resources do you need from me to feel confident presenting this strategy to the leadership team next week?", category: "Coach", hint: "MENTOR HINT: The leader offers assistance while leaving execution firmly in the team member's hands.", headerCorrect: "Spot on.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Exactly. Empowering the individual to define their own support needs is active Coaching.", rationaleIncorrect: "This statement represents Coaching. Offering targeted support builds confidence." },
+      { text: "Your recent client presentation had great energy. How do you feel about the Q&A segment, and where could we refine it?", category: "Coach", hint: "MENTOR HINT: Promoting self-assessment first rather than imposing top-down feedback.", headerCorrect: "Right call.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Correct! Promoting self-assessment first rather than imposing top-down feedback is core Coaching.", rationaleIncorrect: "This statement represents Coaching. Guided self-reflection is key to performance growth." },
+      { text: "Since you managed the pilot phase, what adjustments would you recommend before we scale this process nationwide?", category: "Coach", hint: "MENTOR HINT: Look for questions aimed at assessing comprehension and analytical insight.", headerCorrect: "Exactly.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Spot on! Validating subject-matter expertise and seeking input is empowering Coaching behavior.", rationaleIncorrect: "This statement represents Coaching. Seeking operational input fosters ownership." },
+
+      // DIRECT
+      { text: "Your presentation was clear. Next time, include raw data points on Slide 4 to back up your ROI claims.", category: "Direct", hint: "MENTOR HINT: Look for a clear, actionable expectation being set without taking over the actual task.", headerCorrect: "Correct.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Right call. Giving clear, specific adjustments sets objective expectations without policing style.", rationaleIncorrect: "This statement represents Direct leadership. It provides clear, actionable parameters." },
+      { text: "To hit our Q3 SLA target, all tier-1 escalation tickets must receive an initial response within 2 hours of arrival.", category: "Direct", hint: "MENTOR HINT: Notice explicit parameters regarding deadline and location without dictating how the work gets done.", headerCorrect: "Spot on.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Exactly. Setting explicit, quantitative metrics for execution is Direct leadership.", rationaleIncorrect: "This statement represents Direct leadership. It sets clear operational performance standards." },
+      { text: "Please format all client-facing financial summaries using the standard Q3 template located on the share drive.", category: "Direct", hint: "MENTOR HINT: Focus on standard policy enforcement without micromanaging the process.", headerCorrect: "Right call.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Correct! Enforcing standard templates is Direct leadership that ensures quality governance.", rationaleIncorrect: "This statement represents Direct leadership. Standardizing process output is essential governance." },
+      { text: "In future weekly status updates, open with key risks first before detailing project progress highlights.", category: "Direct", hint: "MENTOR HINT: Notice operational ground rules being established for meeting efficiency.", headerCorrect: "Exactly.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Spot on. Establishing communication protocols for decision-making is clear Direct leadership.", rationaleIncorrect: "This statement represents Direct leadership. Restructuring reporting formats increases clarity." },
+      { text: "Ensure all budget variance notes include a brief risk analysis prior to end-of-month submission.", category: "Direct", hint: "MENTOR HINT: Defining procedural compliance steps removes ambiguity and is Direct leadership.", headerCorrect: "Spot on.", headerIncorrect: "Miscalibration.", rationaleCorrect: "Right call! Defining procedural compliance steps removes ambiguity and is Direct leadership.", rationaleIncorrect: "This statement represents Direct leadership. Explicit procedural guidelines prevent rework." }
     ];
 
-    // Shuffle deck once on game start
+    // Shuffle deck
     for (var i = window.gameDeck.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
       var temp = window.gameDeck[i];
@@ -217,84 +63,97 @@ window.Script2 = function()
     }
   }
 
-  // Calculate index and bind BOTH window.activeCard and currentScenarioText
-  var safeIndex = currentIndex % window.gameDeck.length;
-  var currentCard = window.gameDeck[safeIndex];
+  // Force active card and scenario text to write directly
+  var safeIdx = currentIndex % window.gameDeck.length;
+  var card = window.gameDeck[safeIdx];
+  window.activeCard = card;
 
-  window.activeCard = currentCard; // <-- THIS LINE WAS MISSING
-  player.SetVar("currentScenarioText", currentCard.text);
-
-} catch (e) {
-  console.log("Scenario script error: " + e.message);
+  if (card && card.text) {
+    player.SetVar("currentScenarioText", String(card.text));
+  }
+} catch (err) {
+  console.log("Timeline Start Error: " + err.message);
 }
 }
 
 window.Script3 = function()
 {
+  try {
   var player = GetPlayer();
-var currentMorale = player.GetVar("moraleScore") || 50;
-var currentProd = player.GetVar("productivityScore") || 50;
+  var userChoice = "Coach";
 
-// Explicitly parse correctAnswers as a number so Question 1 adds properly
-var correctCount = Number(player.GetVar("correctAnswers")) || 0;
+  var idx = parseInt(player.GetVar("scenariosPlayed"), 10) || 0;
+  var deck = window.gameDeck || [];
+  var card = deck[idx % deck.length];
 
-player.SetVar("moraleScore", Math.min(100, currentMorale + 15));
-player.SetVar("productivityScore", Math.min(100, currentProd + 15));
+  if (card) {
+    var cardCat = String(card.category || "").trim().toLowerCase();
+    var isCorrect = (cardCat === userChoice.toLowerCase());
 
-var card = window.activeCard;
-if (card) {
-  if (card.category === "Coach") {
-    player.SetVar("correctAnswers", correctCount + 1);
-    player.SetVar("rationaleText", card.headerCorrect + "\n\n" + card.rationaleCorrect);
-  } else {
-    player.SetVar("rationaleText", card.headerIncorrect + "\n\n" + card.rationaleIncorrect);
+    if (isCorrect) {
+      var currentScore = parseInt(player.GetVar("moraleScore"), 10) || 0;
+      player.SetVar("moraleScore", Math.min(100, currentScore + 20));
+    }
+
+    var rat = isCorrect ? card.rationaleCorrect : card.rationaleIncorrect;
+    player.SetVar("feedbackText", String(rat || ""));
   }
+} catch (err) {
+  console.log("Coach Error: " + err.message);
 }
 }
 
 window.Script4 = function()
 {
+  try {
   var player = GetPlayer();
-var currentMorale = player.GetVar("moraleScore") || 50;
-var currentProd = player.GetVar("productivityScore") || 50;
+  var userChoice = "Direct";
 
-// Explicitly parse correctAnswers as a number so Question 1 adds properly
-var correctCount = Number(player.GetVar("correctAnswers")) || 0;
+  var idx = parseInt(player.GetVar("scenariosPlayed"), 10) || 0;
+  var deck = window.gameDeck || [];
+  var card = deck[idx % deck.length];
 
-player.SetVar("moraleScore", Math.min(100, currentMorale + 5));
-player.SetVar("productivityScore", Math.min(100, currentProd + 15));
+  if (card) {
+    var cardCat = String(card.category || "").trim().toLowerCase();
+    var isCorrect = (cardCat === userChoice.toLowerCase());
 
-var card = window.activeCard;
-if (card) {
-  if (card.category === "Direct") {
-    player.SetVar("correctAnswers", correctCount + 1);
-    player.SetVar("rationaleText", card.headerCorrect + "\n\n" + card.rationaleCorrect);
-  } else {
-    player.SetVar("rationaleText", card.headerIncorrect + "\n\n" + card.rationaleIncorrect);
+    if (isCorrect) {
+      var currentScore = parseInt(player.GetVar("moraleScore"), 10) || 0;
+      player.SetVar("moraleScore", Math.min(100, currentScore + 20));
+    }
+
+    var rat = isCorrect ? card.rationaleCorrect : card.rationaleIncorrect;
+    player.SetVar("feedbackText", String(rat || ""));
   }
+} catch (err) {
+  console.log("Direct Error: " + err.message);
 }
 }
 
 window.Script5 = function()
 {
+  try {
   var player = GetPlayer();
-var currentMorale = player.GetVar("moraleScore") || 50;
-var currentProd = player.GetVar("productivityScore") || 50;
+  var userChoice = "Control";
 
-// Explicitly parse correctAnswers as a number so Question 1 adds properly
-var correctCount = Number(player.GetVar("correctAnswers")) || 0;
+  var idx = parseInt(player.GetVar("scenariosPlayed"), 10) || 0;
+  var deck = window.gameDeck || [];
+  var card = deck[idx % deck.length];
 
-player.SetVar("moraleScore", Math.max(0, currentMorale - 15));
-player.SetVar("productivityScore", Math.max(0, currentProd - 10));
+  if (card) {
+    var cardCat = String(card.category || "").trim().toLowerCase();
+    var isCorrect = (cardCat === userChoice.toLowerCase());
 
-var card = window.activeCard;
-if (card) {
-  if (card.category === "Control") {
-    player.SetVar("correctAnswers", correctCount + 1);
-    player.SetVar("rationaleText", card.headerCorrect + "\n\n" + card.rationaleCorrect);
-  } else {
-    player.SetVar("rationaleText", card.headerIncorrect + "\n\n" + card.rationaleIncorrect);
+    if (isCorrect) {
+      var currentScore = parseInt(player.GetVar("moraleScore"), 10) || 0;
+      player.SetVar("moraleScore", Math.min(100, currentScore + 20));
+    }
+
+    var rat = isCorrect ? card.rationaleCorrect : card.rationaleIncorrect;
+    player.SetVar("feedbackText", String(rat || ""));
   }
+} catch (err) {
+  console.log("Control Error: " + err.message);
 }
 }
 
@@ -302,44 +161,45 @@ window.Script6 = function()
 {
   try {
   var player = GetPlayer();
-  var currentIndex = player.GetVar("scenariosPlayed") || 0;
+  var passes = parseInt(player.GetVar("MentorPassCount"), 10);
+  if (isNaN(passes)) { passes = 1; }
 
-  // 1. Force variable to 0 in Storyline player
-  player.SetVar("MentorPassCount", 0);
+  if (passes > 0) {
+    // Decrement pass count
+    player.SetVar("MentorPassCount", passes - 1);
 
-  // 2. Fetch and set dynamic hint
-  if (window.gameDeck && window.gameDeck[currentIndex]) {
-    var card = window.gameDeck[currentIndex];
-    var dynamicHint = card.hint;
-    
-    if (!dynamicHint) {
-      if (card.category === "Control") {
-        dynamicHint = "MENTOR HINT: Pay attention to whether this intervention takes over execution or micromanages routine choices.";
-      } else if (card.category === "Coach") {
-        dynamicHint = "MENTOR HINT: Notice if the manager is asking guiding questions to prompt self-reflection.";
-      } else if (card.category === "Direct") {
-        dynamicHint = "MENTOR HINT: Look for clear operational standards or objective boundary-setting.";
-      } else {
-        dynamicHint = "MENTOR HINT: Focus on whether this behavior sets a rule, asks a question, or takes over control.";
-      }
+    // Fetch hint string specifically
+    var hintText = "MENTOR HINT: Evaluate whether this action guides, directs, or controls.";
+    if (window.activeCard && window.activeCard.hint) {
+      hintText = window.activeCard.hint;
     }
-    player.SetVar("mentorHintText", dynamicHint);
+
+    // Assign directly to your mentorHintText variable
+    player.SetVar("mentorHintText", String(hintText));
   }
 } catch (err) {
-  console.log("Error processing mentor hint: " + err.message);
+  console.log("Hotspot Error: " + err.message);
 }
 }
 
 window.Script7 = function()
 {
+  try {
   var player = GetPlayer();
-var currentIndex = player.GetVar("scenariosPlayed") || 0;
-var nextIndex = currentIndex + 1;
 
-if (window.gameDeck && window.gameDeck[nextIndex % window.gameDeck.length]) {
-  var nextCard = window.gameDeck[nextIndex % window.gameDeck.length];
-  window.activeCard = nextCard;
-  player.SetVar("currentScenarioText", nextCard.text);
+  // 1. Advance the scenariosPlayed counter by 1
+  var currentIdx = parseInt(player.GetVar("scenariosPlayed"), 10) || 0;
+  var nextIdx = currentIdx + 1;
+  player.SetVar("scenariosPlayed", nextIdx);
+
+  // 2. Load the next card into activeCard and currentScenarioText
+  if (nextIdx < 5 && window.gameDeck && window.gameDeck[nextIdx]) {
+    var nextCard = window.gameDeck[nextIdx];
+    window.activeCard = nextCard;
+    player.SetVar("currentScenarioText", String(nextCard.text));
+  }
+} catch (err) {
+  console.log("Error advancing scenario: " + err.message);
 }
 }
 

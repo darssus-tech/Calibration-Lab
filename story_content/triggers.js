@@ -2,43 +2,43 @@ function ExecuteScript(strId)
 {
   switch (strId)
   {
-      case "63yAjGtX96t":
+      case "65X3FbAxz5q":
         Script1();
         break;
-      case "5tuMSEp23vA":
+      case "5xvb4kGMH08":
         Script2();
         break;
-      case "5XxqiAVZVru":
+      case "5itEzYazU3i":
         Script3();
         break;
-      case "6j4sbHv3Lu1":
+      case "6UA1W7EEMaf":
         Script4();
         break;
-      case "6TjaWlPVpLg":
+      case "6UswHXAxOLu":
         Script5();
         break;
-      case "6rXiexGsdSx":
+      case "6MB0UraHtBp":
         Script6();
         break;
-      case "6hvL6XzZ2yd":
+      case "6kEs5c2AF3f":
         Script7();
         break;
-      case "5lcT9hjvN4V":
+      case "67MLjtriGxB":
         Script8();
         break;
-      case "6dJySiEtWT2":
+      case "65ipISJUfhb":
         Script9();
         break;
-      case "64aWuaINbTH":
+      case "6dmlUoNZBq8":
         Script10();
         break;
-      case "6byRlgQ25tD":
+      case "5XkcDEEBiBZ":
         Script11();
         break;
-      case "6k8HiRc0XqI":
+      case "6KAB1oAgiyR":
         Script12();
         break;
-      case "60MTXnMLRDv":
+      case "6VicDCQiz0O":
         Script13();
         break;
   }
@@ -62,4 +62,21 @@ var slideHeight = player.slideHeight;
 var getKeyDown = player.getKeyDown;
 var keydown = player.keydown;
 var keyup = player.keyup;
+window.Script1 = function()
+{
+  const target = object('5wQeYSFnQg6');
+const duration = 750;
+const easing = 'ease-out';
+const id = '68XI2AEmkJg';
+const growAmount = 0.2;
+player.addForTriggers(
+id,
+target.animate(
+[ {scale: `${1 + growAmount}` } ]
+,
+  { fill: 'forwards', duration, easing }
+)
+);
+}
+
 };
