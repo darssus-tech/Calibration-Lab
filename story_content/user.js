@@ -226,27 +226,6 @@ player.SetVar("leadershipRank", rank);
 
 window.Script9 = function()
 {
-  var player = GetPlayer();
-
-// Reset all game tracking variables
-player.SetVar("scenariosPlayed", 0);
-player.SetVar("moraleScore", 50);
-player.SetVar("productivityScore", 50);
-player.SetVar("MentorPassCount", 1); // Restores mug counter to 1
-
-// Reshuffle the deck so the second play-through feels fresh
-if (window.gameDeck && window.gameDeck.length > 0) {
-  for (var i = window.gameDeck.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var temp = window.gameDeck[i];
-    window.gameDeck[i] = window.gameDeck[j];
-    window.gameDeck[j] = temp;
-  }
-}
-}
-
-window.Script10 = function()
-{
   try {
   var simDeck = [
     // --- Scenarios 1-5 ---
@@ -389,7 +368,7 @@ window.Script10 = function()
 }
 }
 
-window.Script11 = function()
+window.Script10 = function()
 {
   try {
   var player = GetPlayer();
@@ -475,7 +454,7 @@ window.Script11 = function()
 }
 }
 
-window.Script12 = function()
+window.Script11 = function()
 {
   try {
   var player = GetPlayer();
@@ -490,7 +469,7 @@ window.Script12 = function()
 }
 }
 
-window.Script13 = function()
+window.Script12 = function()
 {
   try {
   var player = GetPlayer();
